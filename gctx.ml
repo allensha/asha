@@ -1,27 +1,5 @@
 (** The "Graphics Context" component of the GUI library. *)
 
-(** A graphics context represents a region of the window to which
-   widgets will be drawn.
-
-   The drawing primitives in this module are all relative to the
-   graphics context. This means that when a widget needs to draw on
-   the screen, it need not know its absolute position. The graphics
-   context is responsible for translating the relative positions
-   passed into the drawing routines into absolute positions on the
-   screen.
-
-   The graphics context also includes other information for basic
-   drawing (such as the current pen color.)
-
-   Note that this module defines a persistent (immutable) data
-   structure. The operations here use a given graphics context to
-   create a new one with the specified characteristics. They do not
-   modify their arguments. *)
-
-(* (We use the module name Graphics in this module to refer to a "shim
-   module" that connects to either the native or the javascript
-   graphics.  You do not need to understand the details of how this
-   works.) *)
 module Graphics = G
 
 (****************)
