@@ -82,7 +82,6 @@ let open_graphics () =
     end
 
 (** The top-level graphics context *)
-(* TODO: you will need to modify this variable when you get to Task 5. *)
 let top_level : gctx =
   { x = 0;
     y = 0;
@@ -108,7 +107,6 @@ let with_thickness (g: gctx) (t: int) : gctx =
 
 (** Set the OCaml graphics library's internal state according to the
    Gctx settings.  Initially, this just sets the current pen color. *)
-(* TODO: You will need to modify this definition for Task 5. *)
 let set_graphics_state (gc: gctx) : unit =
   let c = gc.color in
   let t = gc.thickness in
@@ -127,23 +125,9 @@ let graphics_size_x () =
 let graphics_size_y () =
   if graphics_opened.contents then Graphics.size_y () else 480
 
-(* A main purpose of the graphics context is to provide mapping between    
-   widget-local coordinates and the ocaml coordinates of the graphics      
-   library. Part of that translation comes from the offset stored in the   
-   graphics context itself. The translation needs to know where the widget 
-   is on the screen. The other part of the translation is the y axis flip. 
-   The OCaml library puts (0,0) at the bottom left corner of the window.   
-   We'd like our GUI library to put (0,0) at the top left corner and       
-   increase the y-coordinate as we go *down* the screen. *)
-
 (** A widget-relative position *)
 type position = int * int
 
-(* The next two functions translate between the coordinate system we
-   are using for the widget library and the native coordinates of the
-   Graphics module.  Remember to ALWAYS call these functions before
-   passing widget-local points to the Graphics module or
-   vice-versa. *)
 
 (** Convert widget-local coordinates (x,y) to OCaml graphics
     coordinates, relative to the graphics context. *)
@@ -163,10 +147,6 @@ let local_coords (g: gctx) ((x, y): int * int) : position =
 (** A width and height, paired together. *)
 type dimension = int * int
 
-(* Each of these functions takes inputs in widget-local coordinates,       
-   converts them to OCaml coordinates, and then draws the appropriate      
-   shape.                                                                  *)
-
 (** Draw a line between the two specified positions *)
 let draw_line (g: gctx) (p1: position) (p2: position) : unit =
   set_graphics_state g;
@@ -185,28 +165,17 @@ let draw_string (g: gctx) (p: position) (s: string) : unit =
   (* subtract: working with Ocaml coordinates *)
   Graphics.moveto x (y - height + fudge);
   Graphics.draw_string s
-
-(** Display a rectangle with upper-left corner at position
-    with the specified dimension. Remember that Graphics.draw_rect
-    draws from the bottom-left by default, so you'll have to account
-    for this. *)
-(* TODO: you will need to make this function actually draw a
-   rectangle for Task 0.                                     *)
+                                 *)
 let draw_rect (g: gctx) (p1: position) ((w, h): dimension) : unit =
   set_graphics_state g;
   let (x1, y1) = ocaml_coords g p1 in
   Graphics.draw_rect x1 (y1 - h) w h
 
-(** Display a filled rectangle with upper-left corner at positions
-    with the specified dimension. *)
 let fill_rect (g: gctx) (p1: position) ((w, h): dimension) : unit =
   set_graphics_state g;
   let (x, y) = ocaml_coords g p1 in
   Graphics.fill_rect x (y - h) w h
 
-(** Draw an ellipse at the given position with the given radii *)
-(* TODO: you will need to make this function actually draw an
-   ellipse for Task 0.  *)
 let draw_ellipse (g: gctx) (p: position) (rx: int) (ry: int) : unit =
   set_graphics_state g;
   let (x1, y1) = ocaml_coords g p in
@@ -240,26 +209,13 @@ let draw_points (g : gctx) (pl : position list) : unit =
   
 (** Calculates the size of a text when rendered. *)
 let text_size (text: string) : dimension =
-  (* First, we make sure that the graphics window has been opened.
-     (All of the other functions require a graphics context, which is
-     difficult to get without opening the graphics window first. But
-     this one does not, which can be a source of subtle bugs.) *)
   open_graphics ();
   let (w,h) = Graphics.text_size text in
   (w+1, h)  (* Web browser font widths seem to be smaller than desirable *)
-
-(* TODO: You will need to add several "wrapped" versions of ocaml graphics *)
-(* functions here for Tasks 2, 4, and possibly 5 and 6 *)
-
-
+  
 (************************)
 (**    Event Handling   *)
 (************************)
-
-(* This part of the module adapts OCaml's native event handling to     
-   something that more closely resembles that found in Java. *)
-
-(** Types of events that could occur *)
 type event_type =
   | KeyPress of char    (* Key pressed on the keyboard.      *)
   | MouseDown           (* Mouse button pressed.             *)
